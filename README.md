@@ -54,6 +54,7 @@ Swagger est disponible ici :
 http://127.0.0.1:8000/docs
 ```
 
+![ExTransactionTypeGet](docs/images/ExTransactionTypeGet.png)
 ## Architecture du projet
 
 ```
@@ -180,7 +181,7 @@ Couverture actuelle : ≥ 87%
 python -m unittest discover -s tests_unittest -p "test_*.py"
 ```
 
----
+![UnitTest](docs/images/UnitTest.png)
 
 ## Qualité du code
 
@@ -224,4 +225,6 @@ Le pipeline GitHub Actions exécute :
 - pytest + couverture  
 - unittest  
 - Build du package  
+
+![CiActions](docs/images/CiActions.png)
 
