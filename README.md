@@ -171,7 +171,7 @@ pytest --cov=app --cov-report=term-missing --cov-fail-under=85
 Exigence minimale : 85%  
 Couverture actuelle : ≥ 87%
 
-![Coverage](docs/images/coverage.png)
+![coverage](docs/images/coverage.png)
 
 
 ### Tests features (unittest)
