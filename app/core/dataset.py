@@ -6,7 +6,8 @@ import json
 
 import pandas as pd
 
-DATA_DIR = Path("data")
+import os
+DATA_DIR = Path(os.getenv("DATA_DIR", "data"))
 
 FILES = {
     "transactions": DATA_DIR / "transactions_data.csv",

@@ -30,6 +30,9 @@ jobs:
         run: mypy app
 
       - name: Tests (pytest + coverage)
+        env:
+        
+          DATA_DIR: tests/data
         run: pytest --cov=app --cov-report=term-missing --cov-fail-under=85
 
       - name: Tests (unittest features)

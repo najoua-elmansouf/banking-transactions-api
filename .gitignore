@@ -23,6 +23,7 @@ htmlcov/
 # VS Code
 .vscode/
 
-# data (big files)
+# datasets lourds (local uniquement)
 data/*.csv
 data/*.json
+data/.gitkeep
