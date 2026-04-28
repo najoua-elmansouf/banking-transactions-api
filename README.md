@@ -1,110 +1,94 @@
-# Banking Transactions API (FastAPI)
+# Banking Transactions REST API
 
-## Description
+A production-ready REST API built with **FastAPI** for analyzing banking transaction datasets. Designed with clean architecture principles, full test coverage, static type-checking, and a CI/CD pipeline via GitHub Actions.
 
-API REST développée avec **FastAPI** permettant l’analyse de transactions bancaires, incluant :
+---
 
-- Filtrage et pagination des transactions  
-- Détection de fraude (scoring simplifié)  
-- Calcul de statistiques et agrégations  
-- Profil et classement des clients  
-- Diagnostic du système  
+## Features
 
-Le projet respecte une architecture propre avec :
+- **Transaction endpoints** — filter, paginate, and query transactions
+- **Fraud detection** — rule-based fraud scoring per transaction
+- **Statistics & aggregations** — KPIs computed server-side
+- **Customer profiling** — rankings and behavioral metrics per customer
+- **System diagnostics** — health-check and dataset metadata
 
-- Routers (endpoints FastAPI)
-- Services internes (logique métier séparée)
-- Tests unitaires (pytest)
-- Tests de features (unittest)
-- CI/CD avec GitHub Actions
-- Packaging Python (wheel & sdist)
+---
 
+## Tech Stack
 
-## Installation
+| Layer | Technology |
+|---|---|
+| Framework | FastAPI + Uvicorn |
+| Data processing | Pandas |
+| Validation | Pydantic |
+| Testing | Pytest + unittest |
+| Type checking | mypy |
+| Linting | flake8 (PEP8) |
+| CI/CD | GitHub Actions |
+| Packaging | Python build (wheel + sdist) |
 
-Créer un environnement virtuel :
+---
+
+## Project Structure
+
+```
+banking-transactions-api/
+├── app/
+│   ├── core/
+│   │   └── dataset.py          # Dataset loading & DATA_DIR resolution
+│   ├── routers/
+│   │   ├── transactions.py
+│   │   ├── stats.py
+│   │   ├── fraud.py
+│   │   ├── customers.py
+│   │   └── system.py
+│   ├── services/
+│   │   ├── transactions_service.py
+│   │   ├── stats_service.py
+│   │   ├── fraud_detection_service.py
+│   │   ├── customer_service.py
+│   │   └── system_service.py
+│   └── main.py
+├── tests/              # Pytest integration tests (CI dataset)
+├── tests_unittest/     # Unittest feature tests
+├── docs/images/        # Screenshots
+├── requirements.txt
+└── pyproject.toml
+```
+
+Routers delegate all business logic to dedicated service modules, keeping endpoints clean and testable.
+
+---
+
+## Getting Started
+
+### 1. Clone and create a virtual environment
 
 ```bash
+git clone https://github.com/sm-elabass/banking-transactions-api.git
+cd banking-transactions-api
 python -m venv .venv
 ```
 
-Activer :
+### 2. Activate the environment
 
-### Windows (PowerShell)
-
-```powershell
+```bash
+# Windows (PowerShell)
 .venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
 ```
 
-Installer les dépendances :
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Lancer l’application :
+### 4. Add the Kaggle dataset (local development only)
 
-```bash
-uvicorn app.main:app --reload
-```
-
-Swagger est disponible ici :
-
-```
-http://127.0.0.1:8000/docs
-```
-
-![ExTransactionTypeGet](docs/images/ExTransactionTypeGet.png)
-## Architecture du projet
-
-```
-app/
-├── core/
-│   └── dataset.py
-├── routers/
-│   ├── transactions.py
-│   ├── stats.py
-│   ├── fraud.py
-│   ├── customers.py
-│   └── system.py
-├── services/
-│   ├── transactions_service.py
-│   ├── stats_service.py
-│   ├── fraud_detection_service.py
-│   ├── customer_service.py
-│   └── system_service.py
-└── main.py
-```
-
-Les routers délèguent la logique métier aux services internes afin de respecter la séparation des responsabilités.
-
-
-## Gestion des données
-
-### Stratégie des datasets
-
-Le projet utilise deux configurations de dataset :
-
-1. Dataset complet (développement local)
-2. Dataset réduit (CI / tests automatisés)
-
-Cela permet :
-
-- Exécution rapide en CI  
-- Respect des limites GitHub 
-- Dépôt Git propre et léger  
-- Tests reproductibles  
-
-
-### Dataset en développement local
-
-Pour le développement, les fichiers Kaggle doivent être placés dans :
-
-```
-data/
-```
-
-Fichiers requis :
+Download the dataset files and place them in a `data/` folder at the project root:
 
 ```
 data/
@@ -112,119 +96,96 @@ data/
 ├── users_data.csv
 ├── cards_data.csv
 ├── train_fraud_labels.json
-├── mcc_codes.json
+└── mcc_codes.json
 ```
 
-Ces fichiers sont exclus du dépôt Git car :
+> CI uses a lightweight sample dataset at `tests/data/` — the full Kaggle files are not committed to the repo.
 
-- Certains dépassent 100 MB
-- Ils ralentiraient le clone du projet
-- Ils ne sont pas nécessaires aux tests CI
+### 5. Run the API
 
-### Dataset utilisé en CI
-
-Un dataset réduit est fourni dans :
-
-```
-tests/data/
-```
-
-Il est utilisé par GitHub Actions 
-
-### Variable d’environnement DATA_DIR
-
-Le dossier des données est contrôlé par la variable :
-
-```
-DATA_DIR
-```
-
-#### Comportement par défaut
-
-Si aucune variable n’est définie :
-
-```
-DATA_DIR = "data"
-```
-
-#### Configuration CI (GitHub Actions)
-
-```yaml
-env:
-  DATA_DIR: tests/data
-```
-
-### Lancement local sous Windows
-
-```powershell
+```bash
+# Windows
 $env:DATA_DIR="data"
 uvicorn app.main:app --reload
+
+# macOS / Linux
+DATA_DIR=data uvicorn app.main:app --reload
 ```
 
-## Tests
+Interactive Swagger UI available at: `http://127.0.0.1:8000/docs`
 
-### Pytest (tests unitaires + couverture)
+![Swagger UI](docs/images/swaggerUI.png)
+![Transaction endpoint example](docs/images/ExTransactionTypeGet.png)
+
+---
+
+## Testing
+
+### Pytest — unit tests + coverage
 
 ```bash
 pytest --cov=app --cov-report=term-missing --cov-fail-under=85
 ```
 
-Exigence minimale : 85%  
-Couverture actuelle : ≥ 87%
+Minimum coverage requirement: **85%** — current: **≥ 87%**
 
-![coverage](docs/images/coverage.png)
+![Coverage report](docs/images/coverage.png)
 
-
-### Tests features (unittest)
+### Unittest — feature tests
 
 ```bash
 python -m unittest discover -s tests_unittest -p "test_*.py"
 ```
 
-![UnitTest](docs/images/UnitTest.png)
+![Unit test results](docs/images/UnitTest.png)
 
-## Qualité du code
+---
 
-### Lint (PEP8)
+## Code Quality
 
 ```bash
+# PEP8 linting
 flake8 app
-```
 
-### Typage statique
-
-```bash
+# Static type checking
 mypy app
 ```
-![flake-mypy](docs/images/flake-mypy.png)
 
+All service and router functions are fully type-annotated.
 
-Toutes les fonctions sont typées.
+![Flake8 + mypy](docs/images/flake-mypy.png)
+
+---
 
 ## Packaging
 
-Build avec :
-
 ```bash
 python -m build
+# Output: dist/
 ```
 
-Les fichiers générés se trouvent dans :
+---
 
-```
-dist/
-```
+## CI/CD — GitHub Actions
 
-## Intégration Continue (CI/CD)
+Every push triggers the full pipeline:
 
-Le pipeline GitHub Actions exécute :
+1. Install dependencies
+2. `flake8` lint check
+3. `mypy` type check
+4. `pytest` with coverage gate
+5. `unittest` feature tests
+6. Python package build
 
-- Installation des dépendances  
-- flake8  
-- mypy  
-- pytest + couverture  
-- unittest  
-- Build du package  
+![CI pipeline](docs/images/CiActions.png)
 
-![CiActions](docs/images/CiActions.png)
+---
 
+## Dataset Strategy
+
+| Environment | Dataset location | Purpose |
+|---|---|---|
+| Local dev | `data/` (Kaggle full files) | Full feature testing |
+| CI / GitHub Actions | `tests/data/` (lightweight sample) | Fast, reproducible tests |
+
+The `DATA_DIR` environment variable controls which folder is loaded at runtime.
